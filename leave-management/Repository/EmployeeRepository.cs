@@ -29,6 +29,12 @@ namespace leave_management.Repository
             return this.Save();
         }
 
+        public bool Exists(string id)
+        {
+            var exists = this._db.Employees.Any(q => q.Id == id);
+            return exists;
+        }
+
         public IEnumerable<Employee> FindAll()
         {
             var Employees = this._db.Employees.ToList();

@@ -12,7 +12,8 @@ namespace leave_management.Data
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
-        public DateTime DateCreated { get; set; }
+        [Display(Name="Date created")]
+        public DateTime? DateCreated { get; set; }
 
     }
 }

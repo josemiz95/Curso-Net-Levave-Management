@@ -30,6 +30,12 @@ namespace leave_management.Repository
             return this.Save();
         }
 
+        public bool Exists(int id)
+        {
+            var exists = this._db.LeaveTypes.Any(q => q.Id == id);
+            return exists;
+        }
+
         public IEnumerable<LeaveType> FindAll()
         {
             var LeaveTypes = this._db.LeaveTypes.ToList();
