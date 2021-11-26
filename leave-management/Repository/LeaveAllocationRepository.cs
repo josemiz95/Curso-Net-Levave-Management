@@ -17,6 +17,12 @@ namespace leave_management.Repository
 
         }
 
+        public bool CheckAllocation(int leavetypeId, string employeeId)
+        {
+            var period = DateTime.Now.Year;
+            return FindAll().Where(q => q.EmployeeId == employeeId && q.LeaveTypeId == leavetypeId && q.Period == period).Any();
+        }
+
         public bool Create(LeaveAllocation entity)
         {
             this._db.LeaveAllocations.Add(entity);
@@ -46,6 +52,12 @@ namespace leave_management.Repository
         {
             var LeaveAllocation = this._db.LeaveAllocations.Find(id);
 
+            return LeaveAllocation;
+        }
+
+        public ICollection<LeaveAllocation> GetLeaveAllocationsByEmployee(string id, int period)
+        {
+            var LeaveAllocation = this.FindAll().Where(x => x.EmployeeId == id && x.Period == period).ToList();
             return LeaveAllocation;
         }
 
