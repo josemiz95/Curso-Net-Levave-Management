@@ -1,4 +1,4 @@
-﻿@model leave_management.Models.EmployeeVM
+﻿@model leave_management.Models.ViewAllocationsVM
 
 @{
     ViewData["Title"] = "Details";
@@ -11,56 +11,71 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserName)
+            @Html.DisplayNameFor(model => model.Employee.UserName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserName)
+            @Html.DisplayFor(model => model.Employee.UserName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.Employee.Email)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
+            @Html.DisplayFor(model => model.Employee.Email)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
+            @Html.DisplayNameFor(model => model.Employee.PhoneNumber)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
+            @Html.DisplayFor(model => model.Employee.PhoneNumber)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
+            @Html.DisplayNameFor(model => model.Employee.FirstName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
+            @Html.DisplayFor(model => model.Employee.FirstName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
+            @Html.DisplayNameFor(model => model.Employee.LastName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
+            @Html.DisplayFor(model => model.Employee.LastName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TaxId)
+            @Html.DisplayNameFor(model => model.Employee.TaxId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TaxId)
+            @Html.DisplayFor(model => model.Employee.TaxId)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateOfBirth)
+            @Html.DisplayNameFor(model => model.Employee.DateOfBirth)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateOfBirth)
+            @Html.DisplayFor(model => model.Employee.DateOfBirth)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateJoined)
+            @Html.DisplayNameFor(model => model.Employee.DateJoined)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateJoined)
+            @Html.DisplayFor(model => model.Employee.DateJoined)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+<hr />
+<h2>Leave Allocations</h2>
+<ul class="list-group">
+    @foreach (var item in Model.LeaveAllocations)
+    {
+        <li class="list-group-item">
+            <h6>
+                @item.LeaveType.Name<span class="badge bg-secondary">@item.NumberOfDays</span>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">
+                    <i class="fa fa-pencil"></i>Edit
+                </a>
+            </h6>
+        </li>
+    }
+</ul>
