@@ -5,6 +5,42 @@
 }
 
 <h1>Index</h1>
+<div class="row">
+    <div class="col-3">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body text-center"">
+                <h1 class="card-title">@Model.TotalRequests</h1>
+                <h5 class="card-text">@Html.DisplayNameFor(modelItem => Model.TotalRequests)</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body text-center text-warning">
+                <h1 class="card-title">@Model.PendingRequests</h1>
+                <h5 class="card-text">@Html.DisplayNameFor(modelItem => Model.PendingRequests)</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body text-center text-success">
+                <h1 class="card-title">@Model.ApprovedRequests</h1>
+                <h5 class="card-text">@Html.DisplayNameFor(modelItem => Model.ApprovedRequests)</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body text-center text-danger">
+                <h1 class="card-title">@Model.RejectedRequests</h1>
+                <h5 class="card-text">@Html.DisplayNameFor(modelItem => Model.RejectedRequests)</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h1>Leave Request Log</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
