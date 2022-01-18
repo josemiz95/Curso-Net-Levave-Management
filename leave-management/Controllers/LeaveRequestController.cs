@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,17 +18,22 @@ namespace leave_management.Controllers
     public class LeaveRequestController : Controller
     {
         private readonly ILeaveRequestRepository _leaveRequestRepo;
+        private readonly ILeaveTypeRepository _leaveTypeRepo;
+        private readonly ILeaveAllocationRepository _leaveAllocationRepo;
         private readonly UserManager<Employee> _userManager;
         private readonly IMapper _mapper;
 
-        public LeaveRequestController(ILeaveRequestRepository leaveRequestrepo, IMapper mapper, UserManager<Employee> userManager)
+        public LeaveRequestController(ILeaveRequestRepository leaveRequestrepo, IMapper mapper, UserManager<Employee> userManager, 
+            ILeaveTypeRepository leaveTypeRepo, ILeaveAllocationRepository leaveAloocationRepo)
         {
             _leaveRequestRepo = leaveRequestrepo;
             _mapper = mapper;
             _userManager = userManager;
+            _leaveTypeRepo = leaveTypeRepo;
+            _leaveAllocationRepo = leaveAloocationRepo;
         }
 
-        [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator")]
         // GET: LeaveRequestController
         public ActionResult Index()
         {
@@ -54,21 +60,76 @@ namespace leave_management.Controllers
         // GET: LeaveRequestController/Create
         public ActionResult Create()
         {
-            return View();
+            var leaveTypes = _leaveTypeRepo.FindAll();
+            var leaveTypeItems = leaveTypes.Select(q => new SelectListItem { Value = q.Id.ToString(), Text = q.Name });
+
+            var model = new CreateLeaveRequestVM
+            {
+                LeaveTypes = leaveTypeItems
+            };
+
+            return View(model);
         }
 
         // POST: LeaveRequestController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(CreateLeaveRequestVM model)
         {
+
+            var leaveTypes = _leaveTypeRepo.FindAll();
+            var leaveTypeItems = leaveTypes.Select(q => new SelectListItem { Value = q.Id.ToString(), Text = q.Name });
+            model.LeaveTypes = leaveTypeItems;
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+
+                if (DateTime.Compare(model.StartDate, model.EndDate)>1)
+                {
+                    ModelState.AddModelError("","Start Date is invalid");
+                    return View(model);
+                }
+
+                var employee = _userManager.GetUserAsync(User).Result;
+                var period = DateTime.Now.Year;
+                var allocation = _leaveAllocationRepo.GetLeaveAllocationsByEmployeeAndType(employee.Id, model.LeaveTypeId, period);
+                int daysRequested = (int)(model.EndDate.Date - model.StartDate.Date).TotalDays;
+
+                if(daysRequested > allocation.NumberOfDays)
+                {
+                    ModelState.AddModelError("", "You don't have enougth days");
+                    return View(model);
+                }
+
+                var leaveRequestModel = new LeaveRequestVM
+                {
+                    RequestingEmployeeId = employee.Id,
+                    LeaveTypeId = allocation.LeaveTypeId,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate,
+                    Approved = null,
+                    DateRequested = DateTime.Now,
+                    DateActioned = DateTime.Now
+                };
+
+                var leaveRequest = _mapper.Map<LeaveRequest>(leaveRequestModel);
+                var isSuccess = _leaveRequestRepo.Create(leaveRequest);
+
+                if (!isSuccess)
+                {
+                    return View(model);
+                }
+
+                return RedirectToAction(nameof(Index), "Home");
             }
-            catch
+            catch (Exception e)
             {
-                return View();
+                return View(model);
             }
         }
 
