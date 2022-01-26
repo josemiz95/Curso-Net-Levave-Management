@@ -7,47 +7,44 @@ namespace leave_management.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "DateCreated",
+            migrationBuilder.AlterColumn<string>(
+                name: "Name",
                 table: "LeaveTypes",
-                type: "datetime2",
                 nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2");
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
 
             migrationBuilder.AddColumn<int>(
                 name: "DefaultDays",
                 table: "LeaveTypes",
-                type: "int",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
                 name: "Period",
                 table: "LeaveAllocations",
-                type: "int",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.CreateTable(
-                name: "LeaveTypeVM",
+                name: "DetailsLeaveTypeVM",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Name = table.Column<string>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LeaveTypeVM", x => x.Id);
+                    table.PrimaryKey("PK_DetailsLeaveTypeVM", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "LeaveTypeVM");
+                name: "DetailsLeaveTypeVM");
 
             migrationBuilder.DropColumn(
                 name: "DefaultDays",
@@ -57,14 +54,12 @@ namespace leave_management.Data.Migrations
                 name: "Period",
                 table: "LeaveAllocations");
 
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "DateCreated",
+            migrationBuilder.AlterColumn<string>(
+                name: "Name",
                 table: "LeaveTypes",
-                type: "datetime2",
+                type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2",
+                oldClrType: typeof(string),
                 oldNullable: true);
         }
     }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace leave_management.Data.Migrations
 {
-    public partial class AddedLeaveDetailTables : Migration
+    public partial class AddedLeaveDetailsTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,10 +11,10 @@ namespace leave_management.Data.Migrations
                 name: "LeaveTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Name = table.Column<string>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,12 +25,12 @@ namespace leave_management.Data.Migrations
                 name: "LeaveAllocations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NumberOfDays = table.Column<int>(type: "int", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    LeaveTypeId = table.Column<int>(type: "int", nullable: false)
+                    NumberOfDays = table.Column<int>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    EmployeeId = table.Column<string>(nullable: true),
+                    LeaveTypeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,16 +53,16 @@ namespace leave_management.Data.Migrations
                 name: "LeaveHistories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RequestingEmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LeaveTypeId = table.Column<int>(type: "int", nullable: false),
-                    DateRequested = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateActioned = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Approved = table.Column<bool>(type: "bit", nullable: true),
-                    ApprovedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    RequestingEmployeeId = table.Column<string>(nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: false),
+                    LeaveTypeId = table.Column<int>(nullable: false),
+                    DateRequested = table.Column<DateTime>(nullable: false),
+                    DateActioned = table.Column<DateTime>(nullable: false),
+                    Approved = table.Column<bool>(nullable: true),
+                    ApprovedById = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -74,17 +74,17 @@ namespace leave_management.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_LeaveHistories_AspNetUsers_RequestingEmployeeId",
-                        column: x => x.RequestingEmployeeId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_LeaveHistories_LeaveTypes_LeaveTypeId",
                         column: x => x.LeaveTypeId,
                         principalTable: "LeaveTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LeaveHistories_AspNetUsers_RequestingEmployeeId",
+                        column: x => x.RequestingEmployeeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

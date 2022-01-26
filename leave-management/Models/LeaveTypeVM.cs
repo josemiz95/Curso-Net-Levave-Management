@@ -12,10 +12,11 @@ namespace leave_management.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        [Range(1,30, ErrorMessage = "Please enter a valid number")]
-        [Display(Name ="Default number of days")]
+        [Display(Name = "Default Number Of Days")]
+        [Range(1,25, ErrorMessage = "Please Enter A Valid Number")]
         public int DefaultDays { get; set; }
         [Display(Name="Date Created")]
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
     }
+
 }

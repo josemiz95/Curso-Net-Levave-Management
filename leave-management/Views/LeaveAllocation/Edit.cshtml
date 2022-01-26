@@ -4,15 +4,16 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit @Model.LeaveType.Name for @Model.Employee.FirstName @Model.Employee.LastName</h1>
+    <h1>Editing @Model.LeaveType.Name Allocation for @Model.Employee.Lastname, @Model.Employee.Firstname  </h1>
 
-<h4>EditLeaveAllocationVM</h4>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="EmployeeId" />
             <div class="form-group">
                 <label asp-for="NumberOfDays" class="control-label"></label>
                 <input asp-for="NumberOfDays" class="form-control" />
@@ -26,9 +27,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-outline-secondary btn-block" asp-action="Details" asp-route-id="@Model.EmployeeId">Back to Details</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

@@ -14,73 +14,82 @@ namespace leave_management.Repository
 
         public LeaveAllocationRepository(ApplicationDbContext db)
         {
-            this._db = db;
-
+            _db = db;
         }
 
-        public bool CheckAllocation(int leavetypeId, string employeeId)
+        public async Task<bool> CheckAllocation(int leavetypeid, string employeeid)
         {
             var period = DateTime.Now.Year;
-            return FindAll().Where(q => q.EmployeeId == employeeId && q.LeaveTypeId == leavetypeId && q.Period == period).Any();
+            var allocations = await FindAll();
+            return allocations.Where(q => q.EmployeeId == employeeid 
+                                        && q.LeaveTypeId == leavetypeid 
+                                        && q.Period == period)
+                .Any();
         }
 
-        public bool Create(LeaveAllocation entity)
+        public async Task<bool> Create(LeaveAllocation entity)
         {
-            this._db.LeaveAllocations.Add(entity);
-            return this.Save();
+            await _db.LeaveAllocations.AddAsync(entity);
+            return await Save();
         }
 
-        public bool Delete(LeaveAllocation entity)
+        public async Task<bool> Delete(LeaveAllocation entity)
         {
-            this._db.LeaveAllocations.Remove(entity);
-            return this.Save();
+            _db.LeaveAllocations.Remove(entity);
+            return await Save();
         }
 
-        public bool Exists(int id)
+        public async Task<ICollection<LeaveAllocation>> FindAll()
         {
-            var exists = this._db.LeaveAllocations.Any(q => q.Id == id);
-            return exists;
-        }
-
-        public IEnumerable<LeaveAllocation> FindAll()
-        {
-            var LeaveAllocations = this._db.LeaveAllocations.Include(q => q.Employee)
-                                                            .Include(q => q.LeaveType).ToList();
-
+            var LeaveAllocations = await _db.LeaveAllocations
+                .Include(q => q.LeaveType)
+                .Include(q => q.Employee)
+                .ToListAsync();
             return LeaveAllocations;
         }
 
-        public LeaveAllocation FindById(int id)
+        public async Task<LeaveAllocation> FindById(int id)
         {
-            var LeaveAllocation = this._db.LeaveAllocations.Include(q => q.Employee)
-                                                           .Include(q => q.LeaveType)
-                                                           .Where(q => q.Id == id).FirstOrDefault();
-
+            var LeaveAllocation = await _db.LeaveAllocations
+                .Include(q => q.LeaveType)
+                .Include(q => q.Employee)
+                .FirstOrDefaultAsync(q => q.Id == id);
             return LeaveAllocation;
         }
 
-        public ICollection<LeaveAllocation> GetLeaveAllocationsByEmployee(string id, int period)
+        public async Task<ICollection<LeaveAllocation>> GetLeaveAllocationsByEmployee(string employeeid)
         {
-            var LeaveAllocation = this.FindAll().Where(x => x.EmployeeId == id && x.Period == period).ToList();
-            return LeaveAllocation;
+            var period = DateTime.Now.Year;
+            var allocations = await FindAll();
+            return allocations.Where(q => q.EmployeeId == employeeid && q.Period == period)
+                    .ToList();
         }
 
-        public LeaveAllocation GetLeaveAllocationsByEmployeeAndType(string id, int leaveType, int period)
+        public async Task<LeaveAllocation> GetLeaveAllocationsByEmployeeAndType(string employeeid, int leavetypeid)
         {
-            var LeaveAllocation = this.FindAll().FirstOrDefault(x => x.EmployeeId == id && x.Period == period && x.LeaveTypeId == leaveType);
-            return LeaveAllocation;
+            var period = DateTime.Now.Year;
+            var allocations = await FindAll();
+            return allocations.FirstOrDefault(q => q.EmployeeId == employeeid 
+                                                    && q.Period == period 
+                                                    && q.LeaveTypeId == leavetypeid);
         }
 
-        public bool Save()
+        public async Task<bool> isExists(int id)
         {
-            var changes = this._db.SaveChanges();
+            var exists = await _db.LeaveAllocations.AnyAsync(q => q.Id == id);
+            return exists;
+        }
+
+        public async Task<bool> Save()
+        {
+            var changes = await _db.SaveChangesAsync();
             return changes > 0;
         }
 
-        public bool Update(LeaveAllocation entity)
+        public async Task<bool> Update(LeaveAllocation entity)
         {
-            this._db.LeaveAllocations.Update(entity);
-            return this.Save();
+            _db.LeaveAllocations.Update(entity);
+            return await Save();
         }
     }
 }

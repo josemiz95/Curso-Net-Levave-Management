@@ -3,30 +3,30 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace leave_management.Data.Migrations
 {
-    public partial class changedLeaveHistoriesTableName : Migration
+    public partial class ChangedLeaveHistoriesToLeaveRequests : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "LeaveHistories");
+                name: "DetailsLeaveTypeVM");
 
             migrationBuilder.DropTable(
-                name: "LeaveTypeVM");
+                name: "LeaveHistories");
 
             migrationBuilder.CreateTable(
                 name: "LeaveRequests",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RequestingEmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LeaveTypeId = table.Column<int>(type: "int", nullable: false),
-                    DateRequested = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateActioned = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Approved = table.Column<bool>(type: "bit", nullable: true),
-                    ApprovedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    RequestingEmployeeId = table.Column<string>(nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: false),
+                    LeaveTypeId = table.Column<int>(nullable: false),
+                    DateRequested = table.Column<DateTime>(nullable: false),
+                    DateActioned = table.Column<DateTime>(nullable: false),
+                    Approved = table.Column<bool>(nullable: true),
+                    ApprovedById = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -38,17 +38,17 @@ namespace leave_management.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_LeaveRequests_AspNetUsers_RequestingEmployeeId",
-                        column: x => x.RequestingEmployeeId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_LeaveRequests_LeaveTypes_LeaveTypeId",
                         column: x => x.LeaveTypeId,
                         principalTable: "LeaveTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LeaveRequests_AspNetUsers_RequestingEmployeeId",
+                        column: x => x.RequestingEmployeeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -71,6 +71,20 @@ namespace leave_management.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "LeaveRequests");
+
+            migrationBuilder.CreateTable(
+                name: "DetailsLeaveTypeVM",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DetailsLeaveTypeVM", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "LeaveHistories",
@@ -97,31 +111,17 @@ namespace leave_management.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_LeaveHistories_AspNetUsers_RequestingEmployeeId",
-                        column: x => x.RequestingEmployeeId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_LeaveHistories_LeaveTypes_LeaveTypeId",
                         column: x => x.LeaveTypeId,
                         principalTable: "LeaveTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LeaveTypeVM",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LeaveTypeVM", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LeaveHistories_AspNetUsers_RequestingEmployeeId",
+                        column: x => x.RequestingEmployeeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
